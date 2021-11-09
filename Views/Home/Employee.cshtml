@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bem vindo</h1>
+    <p>Este é o gerenciador de PDI, confira seu andamento.</p>
+</div>
+<div class="row text-center">
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+      <div class="card-header">Tarefas Abertos</div>
+      <div class="card-body">
+        <h5 class="card-title">@ViewData["OpenTasks"]</h5>
+      </div>
+    </div>
+    <div class="ml-2 card text-white bg-info mb-3" style="max-width: 18rem;">
+      <div class="card-header">Próxima Avaliação</div>
+      <div class="card-body">
+        <h5 class="card-title">@ViewData["NextReview"]</h5>
+      </div>
+    </div>
+</div>

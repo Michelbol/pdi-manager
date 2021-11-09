@@ -1,0 +1,94 @@
+@using Microsoft.AspNetCore.Identity
+@model Pdi
+<h1>Cadastro de Pdi</h1>
+
+<form method="POST" class="form-horizontal" asp-action="Store" asp-controller="Pdi">
+    <input asp-for="Id" class="form-control" type="hidden">
+    <div class="row">
+        <div class="form-group col-3">
+            <label for="">Nome</label>
+            <input asp-for="Name" class="form-control" type="text" placeholder="Informe um Nome">
+        </div>
+        <div class="form-group col-3">
+            <label for="">Usuário</label>
+            <select asp-for="User.Id" class="form-control">
+                <option value="">Selecione um Usuário</option>
+                @foreach (var user in (List<IdentityUser>) ViewData["Users"])
+                {
+                    var selected = Model != null && user.Id == Model.User.Id;
+                    <option selected="@selected" value="@user.Id">@user.Email</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-3">
+            <label for="">Data de Inicio</label>
+            <input asp-for="StartAt" asp-format="{0:d}" class="form-control" type="text" placeholder="Informe uma Data de Inicio">
+        </div>
+        <div class="form-group col-3">
+            <label for="">Data de Fim</label>
+            <input asp-for="EndAt" asp-format="{0:d}" class="form-control" type="text" placeholder="Informe uma Data de Término">
+        </div>
+    </div>
+    @{
+        double percent = 0;
+        if (Model != null)
+        {
+            var totalTasks = Model.Tasks.Count;
+            var completeTasks = Model.Tasks.Where(t => t.IsDone).Count();
+            percent = ((double) completeTasks / totalTasks * 100);
+            percent = percent.Equals(Double.NaN) ? 0 : percent;
+            percent = (int)percent;
+        }
+        
+    }
+    <label for="">% Finalizada</label>
+    <input class="form-control-range" type="range" value="@percent">
+    <input type="submit" class="float-right btn btn-info" value="Salvar">
+    <a asp-controller="Pdi" asp-action="Finish" asp-route-id="@Model.Id" class="float-right btn btn-success mr-2">Finalizar</a>
+    <div class="row"></div>
+    <hr class="mt-5">
+    @if (Model != null)
+    {
+        <h2>Tasks</h2>
+        <a class="btn btn-info float-left mb-2" asp-controller="Task" asp-action="Add" asp-route-pdiId="@Model.Id">Adicionar Task</a>
+        <table class="table table-striped">
+            <thead>
+            <td>Id</td>
+            <td>Nome</td>
+            <td>Status</td>
+            <td>Ações</td>
+            </thead>
+            <tbody>
+            @foreach (var Task in Model.Tasks)
+            {
+                <tr>
+                    <td>@Task.Id</td>
+                    <td>@Task.Name</td>
+                    <td>
+                        @if (Task.IsDone)
+                        {
+                            <p>Concluido</p>
+                        }
+                        else
+                        {
+                            <p>A Fazer</p>
+                        }
+        
+                    </td>
+                    <td>
+                        @if (Task.IsDone)
+                        {
+                            <a class="btn btn-warning" asp-controller="Task" asp-action="UnDone" asp-route-id="@Task.Id">A fazer</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-success" asp-controller="Task" asp-action="Done" asp-route-id="@Task.Id">Concluir</a>
+                        }
+                        <a class="btn btn-danger" asp-controller="Task" asp-action="Delete" asp-route-id="@Task.Id">Deletar</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</form>

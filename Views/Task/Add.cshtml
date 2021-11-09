@@ -1,0 +1,26 @@
+@model PdiManager.Models.Task
+<h1>Cadastro de Task</h1>
+
+<form method="POST" class="form-horizontal" asp-action="Store" asp-controller="Task">
+    <input asp-for="Id" class="form-control" type="hidden">
+    <input asp-for="Pdi.Id" class="form-control" type="hidden">
+    <div class="row">
+        <div class="form-group col-3">
+            <label for="">Nome</label>
+            <input asp-for="Name" class="form-control" type="text" placeholder="Informe um Nome">
+        </div>
+    </div>
+    <input type="submit" class="float-right btn btn-info " value="Salvar">
+    @if (Model.Id != 0)
+    {
+        @if (Model.IsDone)
+        {
+            <a class="btn btn-danger" asp-controller="Task" asp-action="UnDone" asp-route-id="@Model.Id">A fazer</a>
+        }
+        else
+        {
+            <a class="btn btn-success" asp-controller="Task" asp-action="Done" asp-route-id="@Model.Id">Concluir</a>
+        }
+    }
+    <div class="row"></div>
+</form>

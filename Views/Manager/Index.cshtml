@@ -1,0 +1,26 @@
+@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+<h1>Listagem de Gestores</h1>
+
+<table class="table table-striped">
+    <thead>
+    <td>E-mail</td>
+    @if ((bool) ViewData["IsManager"])
+    {
+        <td>Ações</td>
+    }
+    </thead>
+    <tbody>
+    @foreach (var manager in Model)
+    {
+        <tr>
+            <td>@manager.Email</td>
+            @if ((bool)ViewData["IsManager"])
+            {
+                <td>
+                    <a class="btn btn-primary" asp-controller="Manager" asp-action="MakeEmployee" asp-route-id="@manager.Id">Tornar Funcionario</a>
+                </td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
