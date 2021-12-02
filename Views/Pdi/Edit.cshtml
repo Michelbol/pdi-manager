@@ -13,10 +13,13 @@
             <label for="">Usuário</label>
             <select asp-for="User.Id" class="form-control">
                 <option value="">Selecione um Usuário</option>
-                @foreach (var user in (List<IdentityUser>) ViewData["Users"])
+                @if (ViewData["Users"] != null)
                 {
-                    var selected = Model != null && user.Id == Model.User.Id;
-                    <option selected="@selected" value="@user.Id">@user.Email</option>
+                    @foreach (var user in (List<IdentityUser>) ViewData["Users"])
+                    {
+                        var selected = Model.Id > 0 && user.Id == Model.User.Id;
+                        <option selected="@selected" value="@user.Id">@user.Email</option>
+                    }                    
                 }
             </select>
         </div>
@@ -31,7 +34,7 @@
     </div>
     @{
         double percent = 0;
-        if (Model != null)
+        if (Model.Id > 0)
         {
             var totalTasks = Model.Tasks.Count;
             var completeTasks = Model.Tasks.Where(t => t.IsDone).Count();
@@ -47,7 +50,7 @@
     <a asp-controller="Pdi" asp-action="Finish" asp-route-id="@Model.Id" class="float-right btn btn-success mr-2">Finalizar</a>
     <div class="row"></div>
     <hr class="mt-5">
-    @if (Model != null)
+    @if (Model.Id > 0)
     {
         <h2>Tasks</h2>
         <a class="btn btn-info float-left mb-2" asp-controller="Task" asp-action="Add" asp-route-pdiId="@Model.Id">Adicionar Task</a>

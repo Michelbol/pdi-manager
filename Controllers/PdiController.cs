@@ -62,8 +62,15 @@ namespace PdiManager.Controllers
 
         public IActionResult Add()
         {
-            ViewData["Users"] = _userManager.Users.ToList();
-            return View("Edit");
+            if (User.HasClaim(c => c.Value == "manager"))
+            {
+                ViewData["Users"] = _userManager.Users.ToList();
+            }
+            else
+            {
+                ViewData["Users"] = _userManager.Users.Where(u => u.UserName == User.Identity.Name).ToList();
+            }
+            return View("Edit", new Pdi());
         }
         
         [HttpPost]

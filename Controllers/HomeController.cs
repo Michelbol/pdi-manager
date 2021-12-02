@@ -38,13 +38,28 @@ namespace PdiManager.Controllers
             }
             if (User.HasClaim(c => c.Value == "employee"))
             {
+                ViewData["OpenTasks"] = 0;
+                ViewData["NextReview"] = 0;
+                Pdi openTasks;
                 var user = await _userManager.GetUserAsync(User);
-                var openTasks = _db
-                    .Pdis
-                    .Include("Tasks")
-                    .First(p => p.User.Id == user.Id && !p.IsDone);
-                ViewData["OpenTasks"] = openTasks.Tasks.Count(t => !t.IsDone);
-                ViewData["NextReview"] = openTasks.EndAt.Date.ToString("d");
+                try
+                {
+                    openTasks = _db
+                        .Pdis
+                        .Include("Tasks")
+                        .Include("User")
+                        .First(p => p.User.Id == user.Id && !p.IsDone);
+                    
+                    if (openTasks != null)
+                    {
+                        ViewData["OpenTasks"] = openTasks.Tasks.Count(t => !t.IsDone);
+                        ViewData["NextReview"] = openTasks.EndAt.Date.ToString("d");   
+                    }
+                }
+                catch (InvalidOperationException e)
+                {
+                    Console.WriteLine(e);
+                }
                 return View("Employee");
             }
             return View();
